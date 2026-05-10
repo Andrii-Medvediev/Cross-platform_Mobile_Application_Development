@@ -1,47 +1,111 @@
-class Service {
-  final String name;
-  final int duration;
-
-  const Service(this.name, this.duration);
-
-  void display() {
-    print("Послуга: $name, тривалість: $duration хв.");
-  }
-}
+enum ClientStatus { waiting, serving, completed }
 
 class Client {
   String name;
-  final int ticketNumber;
-  Service service;
+  int ticketNumber;
+  ClientStatus status;
 
-  Client(this.name, this.ticketNumber, this.service);
+  Client(this.name, this.ticketNumber, {this.status = ClientStatus.waiting});
 
-  void display() {
+  bool operator >(Client other) => ticketNumber > other.ticketNumber;
+  bool operator <(Client other) => ticketNumber < other.ticketNumber;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Client && ticketNumber == other.ticketNumber;
+
+  @override
+  int get hashCode => ticketNumber.hashCode;
+}
+
+String statusLabel(ClientStatus status) {
+  switch (status) {
+    case ClientStatus.waiting:
+      return 'очікує';
+    case ClientStatus.serving:
+      return 'обслуговується';
+    case ClientStatus.completed:
+      return 'обслужено';
+  }
+}
+
+class QueueManager {
+  String name;
+  List<Client> clients = [];
+  static QueueManager? _instance;
+
+  QueueManager._internal(this.name);
+
+  factory QueueManager(String name) {
+    if (_instance == null) {
+      _instance = QueueManager._internal(name);
+      print('Відділення "$name" відкрито');
+    } else {
+      print('Відділення "${_instance!.name}" вже працює');
+    }
+    return _instance!;
+  }
+
+  void addClient(Client client) {
+    clients.add(client);
+  }
+
+  void sortQueue() {
+    for (int i = 0; i < clients.length - 1; i++) {
+      for (int j = 0; j < clients.length - i - 1; j++) {
+        if (clients[j] > clients[j + 1]) {
+          Client temp = clients[j];
+          clients[j] = clients[j + 1];
+          clients[j + 1] = temp;
+        }
+      }
+    }
+  }
+
+  void serveNext() {
+    if (clients.isEmpty) {
+      print('Черга порожня');
+      return;
+    }
+    Client client = clients.removeAt(0);
+    client.status = ClientStatus.serving;
     print(
-      "Клієнт: $name\n  Талон №: $ticketNumber\n  Послуга: ${service.name}\n  Тривалість: ${service.duration} хв.",
+      'Обслуговується: ${client.name} (талон №${client.ticketNumber}) | Статус: ${statusLabel(client.status)}',
     );
+    client.status = ClientStatus.completed;
+    print('${client.name} обслужено | Статус: ${statusLabel(client.status)}\n');
+  }
+
+  void showQueue() {
+    for (var client in clients) {
+      print(
+        '${client.name} | Талон №: ${client.ticketNumber} | ${statusLabel(client.status)}',
+      );
+    }
+  }
+
+  QueueManager operator +(QueueManager other) {
+    QueueManager combined = QueueManager._internal('${name}+${other.name}');
+    combined.clients = [...clients, ...other.clients];
+    return combined;
   }
 }
 
 void main() {
-  const Service haircut = Service("Стрижка", 30);
-  const Service manicure = Service("Манікюр", 45);
+  QueueManager manager1 = QueueManager("Центральне");
+  QueueManager manager2 = QueueManager("Центральне");
 
-  const Service haircut2 = Service("Стрижка", 30);
-  print(
-    "haircut і haircut2 - однаковий об'єкт у пам'яті? ${identical(haircut, haircut2)}\n",
-  );
+  manager1.addClient(Client("Іван", 103));
+  manager1.addClient(Client("Олена", 101));
+  manager2.addClient(Client("Петро", 102));
 
-  Client client1 = Client("Tom", 1, haircut);
-  Client client2 = Client("Alice", 2, manicure);
-  Client client3 = Client("Bob", 3, haircut);
+  QueueManager combined = manager1 + manager2;
+  combined.sortQueue();
 
-  print("=== Список послуг ===");
-  haircut.display();
-  manicure.display();
+  print('\n=== Об\'єднана черга (після сортування) ===');
+  combined.showQueue();
 
-  print("\n=== Список клієнтів ===");
-  client1.display();
-  client2.display();
-  client3.display();
+  print('\n=== Обслуговування ===');
+  combined.serveNext();
+  combined.serveNext();
 }

@@ -1,19 +1,32 @@
 class Client {
-  String name = "";
-  int age = 0;
-  int ticketNumber = 0;
+  String name;
+  int ticketNumber;
+  static int queueCount = 0;
+  static const int maxQueueSize = 10;
 
-  void displayInfo() {
-    print("Name: $name, Age: $age, Ticket Number: $ticketNumber");
+  Client(this.name, this.ticketNumber) {
+    queueCount++;
+  }
+
+  void display() {
+    print("=== Клієнт ===");
+    print("Ім'я: $name");
+    print("Талон №: $ticketNumber\n");
+  }
+
+  static bool canJoinQueue() {
+    return queueCount < maxQueueSize;
   }
 }
 
 void main() {
-  Client client1 = Client();
+  Client client1 = Client("Іван", 101);
+  Client client2 = Client("Олена", 102);
 
-  client1.name = "Tom";
-  client1.age = 30;
-  client1.ticketNumber = 101;
+  client1.display();
+  client2.display();
 
-  client1.displayInfo();
+  print("Клієнтів у черзі: ${Client.queueCount}");
+  print("Максимум черги: ${Client.maxQueueSize}");
+  print("Чи можна приєднатися: ${Client.canJoinQueue() ? 'так' : 'ні'}");
 }

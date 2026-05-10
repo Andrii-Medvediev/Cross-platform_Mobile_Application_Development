@@ -1,33 +1,68 @@
-void main() {
-  List<int> waitingTimes = [3, 10, 20];
+class Service {
+  final String name;
+  final int duration;
 
-  for (int i = 0; i < waitingTimes.length; i++) {
-    String status = getClientStatus(waitingTimes[i]);
-    showClient(
-      name: "Client ${i + 1}",
-      waitingTime: waitingTimes[i],
-      priority: waitingTimes[i] < 5,
+  const Service(this.name, this.duration);
+
+  void display() {
+    print("Послуга: $name, тривалість: $duration хв.");
+  }
+}
+
+class Employee {
+  String name;
+  String position;
+
+  Employee(this.name, this.position);
+
+  void display() {
+    print("Співробітник: $name, посада: $position");
+  }
+}
+
+class Client {
+  String name;
+  int ticketNumber;
+  final int minAge = 18;
+  Service? service;
+  Employee? assignedEmployee;
+
+  Client(this.name, this.ticketNumber, {this.service, this.assignedEmployee});
+
+  void display() {
+    print(
+      "Клієнт: $name | Талон №: $ticketNumber | "
+      "Послуга: ${service?.name} (${service?.duration} хв) | "
+      "Співробітник: ${assignedEmployee?.name}",
     );
-    print("Status: $status\n");
   }
 }
 
-String getClientStatus(int waitingTime) {
-  if (waitingTime <= 5) {
-    return "Скоро обслуговування";
-  } else if (waitingTime <= 15) {
-    return "Очікування середнє";
-  } else {
-    return "Очікування довге";
-  }
-}
+void main() {
+  const Service haircut = Service("Стрижка", 30);
+  const Service manicure = Service("Манікюр", 45);
+  const Service haircut2 = Service("Стрижка", 30);
 
-void showClient({
-  required String name,
-  required int waitingTime,
-  bool priority = false,
-}) {
-  print("Name: $name");
-  print("Waiting time: $waitingTime minutes");
-  print("Priority: ${priority ? "Yes" : "No"}");
+  print(
+    "стрижка і стрижка2 — однаковий об'єкт? ${identical(haircut, haircut2)}\n",
+  );
+
+  Employee mykola = Employee("Микола", "Консультант");
+  Employee maria = Employee("Марія", "Супервайзер");
+
+  Client client1 = Client(
+    "Іван",
+    101,
+    service: haircut,
+    assignedEmployee: mykola,
+  );
+  Client client2 = Client(
+    "Олена",
+    102,
+    service: manicure,
+    assignedEmployee: maria,
+  );
+
+  client1.display();
+  client2.display();
 }

@@ -1,20 +1,38 @@
+Function createQueue() {
+  int counter = 0;
+  List<String> servedClients = [];
+
+  return (String name, bool isVip) {
+    counter++;
+    servedClients.add(name);
+
+    void logEntry(int number, String clientName, String vipLabel) {
+      print("Клієнт №$number: $clientName [$vipLabel] — обслуговується");
+    }
+
+    if (counter > 3) {
+      print("Очікування довше звичайного");
+    }
+
+    String vipLabel = isVip ? "VIP" : "звичайний";
+    logEntry(counter, name, vipLabel);
+
+    if (counter == servedClients.length) {
+      return servedClients;
+    }
+  };
+}
+
 void main() {
-  int position = 22;
-  String status;
+  Function serve = createQueue();
 
-  switch (position) {
-    case 1:
-      status = "На обслуговуванні";
-      break;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-      status = "Скоро обслуговування";
-      break;
-    default:
-      status = position > 20 ? "Дуже довге очікування" : "Очікування довге";
-  }
+  serve("Іван", false);
+  serve("Олена", true);
+  serve("Петро", false);
+  serve("Марія", true);
 
-  print(status);
+  List<String> allClients = ["Іван", "Олена", "Петро", "Марія"];
+
+  print("\nОброблено клієнтів: ${allClients.length}");
+  print("Список: ${allClients.join(", ")}");
 }

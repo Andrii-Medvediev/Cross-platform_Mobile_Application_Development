@@ -1,60 +1,85 @@
+class QueueException implements Exception {
+  final String _message;
+  QueueException(this._message);
+
+  String getErrorMessage() => "QueueException: $_message";
+}
+
 class Client {
-  String name;
-  int ticketNumber;
-  String priority;
-  Employee? assignedEmployee;
+  final String name;
+  final int ticketNumber;
 
-  Client(this.name, this.ticketNumber, this.priority);
-}
-
-class VipClient extends Client {
-  VipClient(String name, int ticketNumber) : super(name, ticketNumber, "VIP");
-}
-
-class RegularClient extends Client {
-  RegularClient(String name, int ticketNumber)
-    : super(name, ticketNumber, "Regular");
-}
-
-class Employee {
-  String name;
-  String position;
-
-  Employee(this.name, this.position);
-}
-
-class QueueManager {
-  List<Client> clients = [];
-
-  void addClient(Client client) {
-    clients.add(client);
-    assignEmployee(client);
-  }
-
-  void assignEmployee(Client client) {
-    if (client.priority == "VIP") {
-      client.assignedEmployee = Employee("Mary", "Supervisor");
-    } else {
-      client.assignedEmployee = Employee("John", "Consultant");
+  Client(this.name, this.ticketNumber) {
+    if (name.trim().isEmpty) {
+      throw QueueException("Ім'я клієнта не може бути порожнім");
     }
-  }
-
-  void displayQueue() {
-    for (var client in clients) {
-      print(
-        "Ticket #${client.ticketNumber}: ${client.name} (${client.priority}) - Assigned to: ${client.assignedEmployee?.name} (${client.assignedEmployee?.position})",
+    if (ticketNumber < 0) {
+      throw QueueException(
+        "Номер талону не може бути від'ємним: $ticketNumber",
       );
     }
+  }
+
+  @override
+  String toString() => "$name (талон №$ticketNumber)";
+}
+
+class ClientQueue {
+  final List<Client> _queue = [];
+
+  void addClient(Client client) {
+    _queue.add(client);
+    print("Додано клієнта: $client");
+  }
+
+  void serveNext() {
+    try {
+      final client = _queue.removeAt(0);
+      print("Обслуговується клієнт: $client");
+    } on RangeError catch (e, s) {
+      print("Помилка: черга порожня! $e");
+      print("Стек викликів:\n$s");
+    } catch (e, s) {
+      print("Невідома помилка: $e");
+      print("Стек викликів:\n$s");
+    }
+  }
+
+  void showQueue() {
+    print(
+      "Поточна черга: ${_queue.isEmpty ? '— немає клієнтів —' : _queue.join(', ')}",
+    );
   }
 }
 
 void main() {
-  QueueManager queue = QueueManager();
+  final queue = ClientQueue();
 
-  queue.addClient(RegularClient("Alice", 101));
-  queue.addClient(VipClient("Bob", 102));
-  queue.addClient(RegularClient("Charlie", 103));
-  queue.addClient(VipClient("Diana", 104));
+  final clients = [
+    ("Іван", 1),
+    ("Олена", 2),
+    ("", 3),
+    ("Петро", -5),
+    ("Марія", 4),
+  ];
 
-  queue.displayQueue();
+  print("--- Додавання клієнтів ---");
+  for (final (name, ticket) in clients) {
+    try {
+      queue.addClient(Client(name, ticket));
+    } on QueueException catch (e) {
+      print("Помилка додавання: ${e.getErrorMessage()}");
+    }
+  }
+
+  queue.showQueue();
+  print("--- Початок обслуговування ---");
+
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
+
+  queue.showQueue();
+  print("--- Роботу завершено ---");
 }

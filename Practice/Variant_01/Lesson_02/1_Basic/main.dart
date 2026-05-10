@@ -1,11 +1,11 @@
 void main() {
-  String clientName = "John Smith";
+  String clientName = "Іван Петренко";
   int ticketNumber = 42;
   double waitTime = 15.5;
   bool isVIP = true;
 
-  print("Client name: $clientName");
-  print("Ticket number: $ticketNumber");
-  print("Wait time: $waitTime minutes");
-  print("VIP status: $isVIP");
+  print("Ім'я клієнта: $clientName");
+  print("Номер квитка: $ticketNumber");
+  print("Час очікування: $waitTime хвилин");
+  print("VIP статус: $isVIP");
 }

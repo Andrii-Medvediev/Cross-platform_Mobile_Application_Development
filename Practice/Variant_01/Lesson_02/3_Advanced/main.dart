@@ -4,23 +4,23 @@ void main() {
   String inputPrice = "250.75";
   String inputRating = "4.87654";
 
-  print("Input data (as strings):");
-  print("Ticket: \"$inputTicket\"");
-  print("Time: \"$inputTime\"");
-  print("Price: \"$inputPrice\"");
-  print("Rating: \"$inputRating\"\n");
+  print("Вхідні дані (як рядки):");
+  print("Квиток: \"$inputTicket\"");
+  print("Час: \"$inputTime\"");
+  print("Ціна: \"$inputPrice\"");
+  print("Рейтинг: \"$inputRating\"\n");
 
   int ticketNumber = int.tryParse(inputTicket) ?? 0;
   double registrationTime = double.tryParse(inputTime) ?? 0.0;
   double servicePrice = double.tryParse(inputPrice) ?? 0.0;
   double serviceRating = double.parse(inputRating);
 
-  print("Converted data:");
-  print("Ticket number: ${ticketNumber.toString()}");
-  print("Registration time: ${registrationTime.toString()} minutes");
+  print("Перетворені дані:");
+  print("Номер квитка: ${ticketNumber.toString()}");
+  print("Час реєстрації: ${registrationTime.toString()} хвилин");
   print(
-    "Time (exponential): ${registrationTime.toStringAsExponential(2)} minutes",
+    "Час (експоненційний): ${registrationTime.toStringAsExponential(2)} хвилин",
   );
-  print("Service price: \$${servicePrice.toStringAsFixed(2)}");
-  print("Service rating: ${serviceRating.toStringAsPrecision(3)}");
+  print("Ціна послуги: ${servicePrice.toStringAsFixed(2)} грн");
+  print("Рейтинг послуги: ${serviceRating.toStringAsPrecision(3)}");
 }

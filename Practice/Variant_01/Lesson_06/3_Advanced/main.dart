@@ -1,9 +1,29 @@
 void main() {
-  Map<int, String> queue = {1: "Tom", 2: "Alice", 3: "Bob"};
+  Map<String, List<int>> queues = {
+    "VIP": [1, 4, 7],
+    "Звичайна": [5, 12, 18],
+    "Онлайн": [2, 9],
+  };
 
-  queue[4] = "Sam";
+  for (var type in queues.keys) {
+    List<int> times = queues[type]!;
 
-  for (var entry in queue.entries) {
-    print("Ticket ${entry.key}: ${entry.value}");
+    for (int i = 0; i < times.length; i++) {
+      int time = times[i];
+      String status;
+
+      switch (time) {
+        case <= 5:
+          status = "Скоро обслуговування";
+          break;
+        case <= 15:
+          status = "Очікування середнє";
+          break;
+        default:
+          status = time > 20 ? "Дуже довге очікування" : "Очікування довге";
+      }
+
+      print("Черга $type, клієнт №${i + 1}: $time хв — $status");
+    }
   }
 }

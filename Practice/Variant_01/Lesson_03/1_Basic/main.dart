@@ -1,19 +1,20 @@
 void main() {
-  const String systemName = "Electronic Queue System";
-  const int maxQueueSize = 50;
-  const String systemVersion = "2.0";
+  const String branchName = "City Service Center";
+  const int maxCapacity = 100;
 
-  final DateTime sessionStart = DateTime.now();
-  final String sessionId = "session_${sessionStart.millisecondsSinceEpoch}";
+  final DateTime sessionOpened = DateTime.now();
+  final String queueId = "queue_${sessionOpened.millisecondsSinceEpoch}";
 
-  var currentClients = 0;
+  var clientsInQueue = 0;
+  var queueStatus = "відкрита";
 
-  print("System name: $systemName");
-  print("Max queue size: $maxQueueSize");
-  print("Version: $systemVersion");
-
-  print("\nSession started at: $sessionStart");
-  print("Session ID: $sessionId");
-
-  print("\nCurrent clients in queue: $currentClients");
+  print("=== Система електронної черги ===");
+  print("Відділення: $branchName");
+  print("Максимальна місткість: $maxCapacity");
+  print("");
+  print("Сесію відкрито: $sessionOpened");
+  print("Ідентифікатор черги: $queueId");
+  print("");
+  print("Клієнтів у черзі: $clientsInQueue");
+  print("Статус черги: $queueStatus");
 }

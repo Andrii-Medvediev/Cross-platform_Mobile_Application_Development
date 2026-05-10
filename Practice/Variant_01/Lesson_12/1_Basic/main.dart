@@ -1,19 +1,31 @@
-class Client {
-  String name;
-  int ticketNumber;
-  final int minAge = 18; // константа
+enum ClientStatus { waiting, serving, completed }
 
-  Client(this.name, this.ticketNumber);
+class QueueManager {
+  String name;
+  static QueueManager? _instance;
+
+  QueueManager._internal(this.name);
+
+  factory QueueManager(String name) {
+    if (_instance == null) {
+      _instance = QueueManager._internal(name);
+      print('Відділення "$name" відкрито');
+    } else {
+      print('Відділення "${_instance!.name}" вже працює');
+    }
+    return _instance!;
+  }
 
   void display() {
-    print("Клієнт: $name\nТалон №: $ticketNumber\nМінімальний вік: $minAge\n");
+    print('\n=== Менеджер черги ===');
+    print('Відділення: $name');
   }
 }
 
 void main() {
-  Client client1 = Client("Tom", 101);
-  Client client2 = Client("Alice", 102);
+  QueueManager manager1 = QueueManager("Центральне");
+  QueueManager manager2 = QueueManager("Центральне");
 
-  client1.display();
-  client2.display();
+  manager1.display();
+  print('\nЦе один об\'єкт: ${identical(manager1, manager2)}');
 }

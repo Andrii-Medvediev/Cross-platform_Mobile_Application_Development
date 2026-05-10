@@ -1,25 +1,35 @@
 void main() {
-  const int minServiceTime = 5;
-  const String defaultServiceType = "standard";
+  const String branchName = "City Service Center";
+  const int maxCapacity = 100;
 
-  const maxWaitTime = 30;
-  final configCreatedAt = DateTime.now();
+  final DateTime sessionOpened = DateTime.now();
+  final String queueId = "queue_${sessionOpened.millisecondsSinceEpoch}";
 
-  var operatingMode = "normal";
-  var activeOperators = 3;
+  var clientsInQueue = 0;
+  var queueStatus = "відкрита";
 
-  print("Initial Configuration:");
-  print("  Min service time: $minServiceTime minutes");
-  print("  Max wait time: $maxWaitTime minutes");
-  print("  Default service type: $defaultServiceType");
-  print("  Mode: $operatingMode");
-  print("  Active operators: $activeOperators");
-  print("  Configuration created at: $configCreatedAt");
+  String clientName = "Олена Коваль";
+  int ticketNumber = 15;
+  String? phoneNumber;
+  double? waitTime;
 
-  operatingMode = "priority";
-  activeOperators = 5;
+  print("=== Система електронної черги ===");
+  print("Відділення: $branchName");
+  print("Максимальна місткість: $maxCapacity");
+  print("Сесію відкрито: $sessionOpened");
+  print("Ідентифікатор черги: $queueId");
 
-  print("\nUpdated Configuration:");
-  print("  Mode: $operatingMode");
-  print("  Active operators: $activeOperators");
+  print("");
+  print("=== Реєстрація клієнта ===");
+  print("Ім'я: $clientName");
+  print("Талон: $ticketNumber");
+  print("Телефон: ${phoneNumber ?? "Не вказано"}");
+  print("Час очікування: ${waitTime ?? 0.0} хв");
+
+  clientsInQueue++;
+
+  print("");
+  print("=== Стан черги ===");
+  print("Клієнтів у черзі: $clientsInQueue");
+  print("Статус черги: $queueStatus");
 }

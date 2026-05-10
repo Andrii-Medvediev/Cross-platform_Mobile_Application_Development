@@ -1,48 +1,23 @@
-abstract class Client {
-  void displayInfo();
+Future<String> registerClient(String name, bool hasError) {
+  return Future.delayed(Duration(seconds: 1), () {
+    if (hasError) throw "Помилка реєстрації: сервер недоступний";
+    return "Клієнт $name зареєстрований у черзі";
+  });
 }
 
-class RegularClient extends Client {
-  String name;
-  int ticketNumber;
-  final int minAge = 18;
-
-  RegularClient(this.name, this.ticketNumber);
-
-  @override
-  void displayInfo() {
-    print("=== Regular Client ===");
-    print("Name: $name");
-    print("Ticket Number: $ticketNumber");
-    print("Minimum Age: $minAge\n");
-  }
-}
-
-class VIPClient extends Client {
-  String name;
-  int ticketNumber;
-  int priorityLevel;
-
-  VIPClient(this.name, this.ticketNumber, this.priorityLevel);
-
-  @override
-  void displayInfo() {
-    print("=== VIP Client ===");
-    print("Name: $name");
-    print("Ticket Number: $ticketNumber");
-    print("Priority Level: $priorityLevel\n");
-  }
+void processClient(String name, bool hasError) {
+  registerClient(name, hasError)
+      .then((result) {
+        print(result);
+        return 101;
+      })
+      .then((ticket) => print("Талон №: $ticket видано"))
+      .catchError((err) => print(err), test: (err) => err is String)
+      .whenComplete(() => print("Операція завершена\n"));
 }
 
 void main() {
-  List<Client> queue = [
-    RegularClient("Alice", 101),
-    VIPClient("Charlie", 201, 1),
-    RegularClient("Bob", 102),
-    VIPClient("Diana", 202, 2),
-  ];
-
-  for (var client in queue) {
-    client.displayInfo();
-  }
+  print("Система запущена\n");
+  processClient("Іван", false);
+  processClient("Петро", true);
 }

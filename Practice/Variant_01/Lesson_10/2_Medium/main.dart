@@ -1,25 +1,64 @@
-void main() {
-  List<String> clients = ["Tom", "Alice", "Jonathan", "Kate"];
+abstract class ClientInterface {
+  String name = "";
+  int ticketNumber = 0;
 
-  void processClients(List<String> clientList, Function handler) {
-    for (var client in clientList) {
-      handler(client);
-    }
+  void displayInfo();
+}
+
+abstract class Client implements ClientInterface {
+  @override
+  void displayInfo();
+}
+
+class RegularClient extends Client {
+  @override
+  String name;
+
+  @override
+  int ticketNumber;
+
+  final int minAge = 18;
+
+  RegularClient(this.name, this.ticketNumber);
+
+  @override
+  void displayInfo() {
+    print("=== Клієнт ===");
+    print("Ім'я: $name");
+    print("Талон №: $ticketNumber");
+    print("Мінімальний вік: $minAge\n");
   }
+}
 
-  processClients(clients, (client) {
-    print("Processing client: $client");
+class VipClient extends Client {
+  @override
+  String name;
 
-    void log() {
-      print("Client $client logged");
-    }
+  @override
+  int ticketNumber;
 
-    log();
+  int priorityLevel;
 
-    if (client.length > 4) {
-      print("Long name detected");
-    }
+  VipClient(this.name, this.ticketNumber, this.priorityLevel);
 
-    print("");
-  });
+  @override
+  void displayInfo() {
+    print("=== VIP Клієнт ===");
+    print("Ім'я: $name");
+    print("Талон №: $ticketNumber");
+    print("Пріоритет: $priorityLevel\n");
+  }
+}
+
+void main() {
+  List<ClientInterface> queue = [
+    RegularClient("Іван", 101),
+    VipClient("Олена", 201, 1),
+    RegularClient("Петро", 102),
+    VipClient("Марія", 202, 2),
+  ];
+
+  for (var client in queue) {
+    client.displayInfo();
+  }
 }

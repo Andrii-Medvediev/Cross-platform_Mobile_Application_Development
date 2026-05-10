@@ -1,46 +1,85 @@
+class Service {
+  final String name;
+  final int duration;
+
+  const Service(this.name, this.duration);
+}
+
+class Employee {
+  String name;
+  String position;
+
+  Employee(this.name, this.position);
+}
+
+class Client {
+  String name;
+  int ticketNumber;
+  String priority;
+  Employee? assignedEmployee;
+
+  Client(this.name, this.ticketNumber, this.priority);
+
+  void display() {
+    print(
+      "Талон #$ticketNumber: $name ($priority) — "
+      "Призначено: ${assignedEmployee?.name} (${assignedEmployee?.position})",
+    );
+  }
+}
+
+class VipClient extends Client {
+  VipClient(String name, int ticketNumber) : super(name, ticketNumber, "VIP");
+
+  @override
+  void display() {
+    super.display();
+  }
+}
+
+class RegularClient extends Client {
+  RegularClient(String name, int ticketNumber)
+    : super(name, ticketNumber, "Звичайний");
+
+  @override
+  void display() {
+    super.display();
+  }
+}
+
+class QueueManager {
+  List<Client> clients = [];
+
+  final Employee consultant = Employee("Микола", "Консультант");
+  final Employee supervisor = Employee("Марія", "Супервайзер");
+
+  void addClient(Client client) {
+    clients.add(client);
+    assignEmployee(client);
+  }
+
+  void assignEmployee(Client client) {
+    if (client.priority == "VIP") {
+      client.assignedEmployee = supervisor;
+    } else {
+      client.assignedEmployee = consultant;
+    }
+  }
+
+  void displayQueue() {
+    for (var client in clients) {
+      client.display();
+    }
+  }
+}
+
 void main() {
-  List<Map<String, dynamic>> clients = [
-    {"name": "Tom", "position": 0},
-    {"name": "Alice", "position": 1},
-    {"name": "Bob", "position": 4},
-  ];
+  QueueManager queue = QueueManager();
 
-  List<Map<String, dynamic>> processedClients = processQueue(clients);
+  queue.addClient(RegularClient("Іван", 101));
+  queue.addClient(VipClient("Олена", 102));
+  queue.addClient(RegularClient("Петро", 103));
+  queue.addClient(VipClient("Марія", 104));
 
-  for (var client in processedClients) {
-    print(client);
-  }
-}
-
-List<Map<String, dynamic>> processQueue(List<Map<String, dynamic>> clients) {
-  List<Map<String, dynamic>> result = [];
-
-  for (var client in clients) {
-    int waitingTime = calculateWaitingTime(client["position"]);
-    String status = getClientStatus(waitingTime);
-    bool priority = waitingTime <= 5 ? true : false;
-
-    result.add({
-      "name": client["name"],
-      "waitingTime": waitingTime,
-      "status": status,
-      "priority": priority,
-    });
-  }
-
-  return result;
-}
-
-int calculateWaitingTime(int position) {
-  return position * 5;
-}
-
-String getClientStatus(int waitingTime) {
-  if (waitingTime <= 5) {
-    return "Скоро обслуговування";
-  } else if (waitingTime <= 15) {
-    return "Очікування середнє";
-  } else {
-    return "Очікування довге";
-  }
+  queue.displayQueue();
 }

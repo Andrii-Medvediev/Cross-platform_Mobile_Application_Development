@@ -1,12 +1,19 @@
-void main() {
-  var clients = ["Tom", "Alice", "Bob", "Kate", "John"];
+class Client {
+  String name = "";
+  int age = 0;
+  int ticketNumber = 0;
 
-  int totalClients = clients.length;
-
-  for (int i = 0; i < clients.length; i++) {
-    if (clients[i].startsWith("B")) continue;
-    print("Клієнт ${clients[i]} знаходиться в черзі");
+  void displayInfo() {
+    print("Ім'я: $name, Вік: $age, Номер талону: $ticketNumber");
   }
+}
 
-  print("Загальна кількість клієнтів у черзі: $totalClients");
+void main() {
+  Client client1 = Client();
+
+  client1.name = "Тарас";
+  client1.age = 30;
+  client1.ticketNumber = 101;
+
+  client1.displayInfo();
 }

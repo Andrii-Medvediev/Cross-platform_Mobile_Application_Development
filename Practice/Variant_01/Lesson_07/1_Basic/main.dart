@@ -1,14 +1,14 @@
+int calculateWaitTime(int clientsBefore) => clientsBefore * 5;
+
+void showClient(String name, int waitTime) {
+  print("Клієнт: $name, Час очікування: $waitTime хв");
+}
+
 void main() {
-  int position = 5;
-  String status;
+  List<String> clients = ["Іван", "Олена", "Петро"];
 
-  if (position == 1) {
-    status = "На обслуговуванні";
-  } else if (position <= 5) {
-    status = "Скоро буде обслуговування";
-  } else {
-    status = "Очікування довге";
+  for (int i = 0; i < clients.length; i++) {
+    int waitTime = calculateWaitTime(i);
+    showClient(clients[i], waitTime);
   }
-
-  print(status);
 }

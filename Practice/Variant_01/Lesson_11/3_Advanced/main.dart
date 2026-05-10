@@ -1,64 +1,107 @@
-class Client {
+abstract class AbstractClient {
   String name;
-  int age;
   int ticketNumber;
 
-  Client(this.name, this.age, this.ticketNumber);
+  AbstractClient(this.name, this.ticketNumber);
 
+  void displayInfo();
+}
+
+class RegularClient extends AbstractClient {
+  RegularClient(String name, int ticketNumber) : super(name, ticketNumber);
+
+  @override
   void displayInfo() {
-    print("Ticket #$ticketNumber: $name, Age: $age");
+    print("Ім'я: $name | Талон №: $ticketNumber");
   }
 }
 
-class QueueManager {
-  List<Client> clients = [];
+class VipClient extends AbstractClient {
+  int priorityLevel;
 
-  void addClient(Function createClient) {
-    clients.add(createClient());
+  VipClient(String name, int ticketNumber, this.priorityLevel)
+    : super(name, ticketNumber);
+
+  @override
+  void displayInfo() {
+    print("Ім'я: $name | Талон №: $ticketNumber | Пріоритет: $priorityLevel");
+  }
+}
+
+class ClientQueue<T extends AbstractClient> {
+  final List<T> _queue = [];
+  static int totalClients = 0;
+  static const int maxQueueSize = 5;
+
+  void addClient(T client) {
+    if (_queue.length >= maxQueueSize) {
+      print("Черга переповнена. Клієнт ${client.name} не може приєднатися.");
+      return;
+    }
+    _queue.add(client);
+    totalClients++;
   }
 
-  void serveNext() {
-    if (clients.isNotEmpty) {
-      Client client = clients.removeAt(0);
-      print("Serving client:");
+  void serveClient() {
+    if (_queue.isEmpty) {
+      print("Черга порожня.");
+      return;
+    }
+
+    T clientToServe;
+
+    if (_queue.first is VipClient) {
+      _queue.sort((a, b) {
+        return (a as VipClient).priorityLevel.compareTo(
+          (b as VipClient).priorityLevel,
+        );
+      });
+      clientToServe = _queue.removeAt(0);
+      print(
+        "Обслуговується VIP клієнт: ${clientToServe.name} (пріоритет: ${(clientToServe as VipClient).priorityLevel})",
+      );
+    } else {
+      clientToServe = _queue.removeAt(0);
+      print("Обслуговується клієнт: ${clientToServe.name}");
+    }
+
+    totalClients--;
+  }
+
+  void showQueue() {
+    if (_queue.isEmpty) {
+      print("Черга порожня.");
+      return;
+    }
+    for (var client in _queue) {
       client.displayInfo();
-    } else {
-      print("Queue is empty!");
     }
   }
 
-  void displayQueue() {
-    if (clients.isEmpty) {
-      print("Queue is empty!");
-    } else {
-      print("Current queue:");
-      for (var client in clients) {
-        client.displayInfo();
-      }
-    }
+  static void showTotalClients() {
+    print("Всього клієнтів у чергах: $totalClients");
   }
 }
 
 void main() {
-  QueueManager queue = QueueManager();
+  ClientQueue<VipClient> vipQueue = ClientQueue<VipClient>();
+  ClientQueue<RegularClient> regularQueue = ClientQueue<RegularClient>();
 
-  int ticketCounter = 1;
-  Function createClient = (String name, int age) {
-    return () {
-      Client client = Client(name, age, ticketCounter);
-      ticketCounter++;
-      return client;
-    };
-  };
+  vipQueue.addClient(VipClient("Олена", 201, 2));
+  vipQueue.addClient(VipClient("Марія", 202, 1));
+  regularQueue.addClient(RegularClient("Іван", 101));
+  regularQueue.addClient(RegularClient("Петро", 102));
 
-  queue.addClient(createClient("Tom", 30));
-  queue.addClient(createClient("Alice", 25));
-  queue.addClient(() => Client("Bob", 40, ticketCounter++));
+  print("=== Початковий стан черг ===\n");
+  print("VIP черга:");
+  vipQueue.showQueue();
+  print("\nЗвичайна черга:");
+  regularQueue.showQueue();
 
-  queue.displayQueue();
-  print("");
+  print("\n=== Обслуговування ===");
+  vipQueue.serveClient();
+  regularQueue.serveClient();
 
-  queue.serveNext();
-  print("");
-  queue.displayQueue();
+  print("\n=== Підсумковий стан ===");
+  ClientQueue.showTotalClients();
 }

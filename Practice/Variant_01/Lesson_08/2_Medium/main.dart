@@ -1,16 +1,31 @@
-void main() {
-  Map<String, int> waitTimes = {"Tom": 3, "Alice": 10, "Bob": 20, "Kate": 7};
+class Client {
+  String name = "";
+  int age = 0;
+  int ticketNumber = 0;
 
-  for (var entry in waitTimes.entries) {
-    if (entry.key == "Alice") continue;
-    if (entry.key == "Bob") break;
+  static int _ticketCounter = 100;
 
-    if (entry.value <= 5) {
-      print("${entry.key}: Скоро обслуговування");
-    } else if (entry.value <= 15) {
-      print("${entry.key}: Очікування середнє");
-    } else {
-      print("${entry.key}: Очікування довге");
-    }
+  Client.withTicket(this.name, this.age, this.ticketNumber);
+
+  Client.withDefaultTicket(this.name, this.age) {
+    ticketNumber = _ticketCounter++;
   }
+
+  void displayInfo() {
+    print("Ім'я: $name, Вік: $age, Номер талону: $ticketNumber");
+  }
+}
+
+void main() {
+  Client client1 = Client.withTicket("Аліна", 28, 201);
+  Client client2 = Client.withDefaultTicket("Богдан", 35);
+  Client client3 = Client.withDefaultTicket("Катерина", 22);
+
+  client3
+    ..age = 23
+    ..ticketNumber = 205;
+
+  client1.displayInfo();
+  client2.displayInfo();
+  client3.displayInfo();
 }

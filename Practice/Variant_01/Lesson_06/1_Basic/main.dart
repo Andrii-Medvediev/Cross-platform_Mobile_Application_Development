@@ -1,11 +1,17 @@
 void main() {
-  List<String> queue = ["Tom", "Alice", "Bob", "Sam", "Kate"];
+  List<String> clients = ["Іван", "Олена", "Петро", "Марія", "Олег"];
 
-  print("Queue: $queue");
-  print("First client: ${queue.first}");
-  print("Total clients: ${queue.length}");
+  for (int i = 0; i < clients.length; i++) {
+    String status;
 
-  queue.removeAt(0);
+    if (i + 1 == 1) {
+      status = "На обслуговуванні";
+    } else if (i + 1 <= 3) {
+      status = "Скоро обслуговування";
+    } else {
+      status = "Очікування";
+    }
 
-  print("Updated queue: $queue");
+    print("Клієнт ${clients[i]}, позиція ${i + 1}: $status");
+  }
 }

@@ -1,26 +1,46 @@
 class Client {
-  String name;
-  int ticketNumber;
-  String priority;
+  final String name;
+  Client(this.name);
 
-  Client(this.name, this.ticketNumber, {this.priority = "Regular"});
+  @override
+  String toString() => name;
+}
 
-  void display() {
-    print("Ticket #$ticketNumber: $name ($priority)");
+class ClientQueue {
+  final List<Client> _queue = [];
+
+  void addClient(Client client) {
+    _queue.add(client);
+    print("Додано клієнта: $client");
+  }
+
+  void serveNext() {
+    try {
+      final client = _queue.removeAt(0);
+      print("Обслуговується клієнт: $client");
+    } catch (e) {
+      print("Помилка: черга порожня!");
+    } finally {
+      showQueue();
+    }
+  }
+
+  void showQueue() {
+    print(
+      "Поточна черга: ${_queue.isEmpty ? '— немає клієнтів —' : _queue.join(', ')}",
+    );
   }
 }
 
-class VipClient extends Client {
-  VipClient(String name, int ticketNumber)
-    : super(name, ticketNumber, priority: "VIP");
-}
-
 void main() {
-  Client client1 = Client("Alice", 101);
-  Client client2 = Client("Bob", 102);
-  VipClient vip = VipClient("Charlie", 103);
+  final queue = ClientQueue();
+  queue.addClient(Client("Іван"));
+  queue.addClient(Client("Олена"));
+  queue.addClient(Client("Петро"));
 
-  client1.display();
-  client2.display();
-  vip.display();
+  print("--- Початок обслуговування ---");
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
 }

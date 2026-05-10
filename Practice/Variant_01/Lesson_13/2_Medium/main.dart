@@ -1,57 +1,61 @@
-class Employee {
-  String name;
-  String position;
-
-  Employee(this.name, this.position);
-
-  void display() {
-    print("Employee: $name, Position: $position");
-  }
-}
-
 class Client {
-  String name;
-  int ticketNumber;
-  String priority;
-  Employee? assignedEmployee;
+  final String name;
+  final int ticketNumber;
 
-  Client(
-    this.name,
-    this.ticketNumber, {
-    this.priority = "Regular",
-    this.assignedEmployee,
-  });
+  Client(this.name, this.ticketNumber);
 
-  void display() {
-    print("Ticket #$ticketNumber: $name ($priority)");
-    if (assignedEmployee != null) {
-      print(
-        "Assigned to: ${assignedEmployee!.name}, Position: ${assignedEmployee!.position}",
-      );
-    }
-    print("");
-  }
+  @override
+  String toString() => "$name (талон №$ticketNumber)";
 }
 
-class VipClient extends Client {
-  VipClient(String name, int ticketNumber, {Employee? assignedEmployee})
-    : super(
-        name,
-        ticketNumber,
-        priority: "VIP",
-        assignedEmployee: assignedEmployee,
-      );
+class ClientQueue {
+  final List<Client> _queue = [];
+
+  void addClient(Client client) {
+    try {
+      _queue.add(client);
+      print("Додано клієнта: $client");
+    } catch (e, s) {
+      print("Помилка при додаванні клієнта: $e");
+      print("Стек викликів:\n$s");
+    }
+  }
+
+  void serveNext() {
+    try {
+      final client = _queue.removeAt(0);
+      print("Обслуговується клієнт: $client");
+    } on RangeError catch (e, s) {
+      print("Помилка: черга порожня! $e");
+      print("Стек викликів:\n$s");
+    } on StateError catch (e, s) {
+      print("Помилка стану черги: $e");
+      print("Стек викликів:\n$s");
+    } catch (e, s) {
+      print("Невідома помилка: $e");
+      print("Стек викликів:\n$s");
+    }
+  }
+
+  void showQueue() {
+    print(
+      "Поточна черга: ${_queue.isEmpty ? '— немає клієнтів —' : _queue.join(', ')}",
+    );
+  }
 }
 
 void main() {
-  Employee emp1 = Employee("John", "Consultant");
-  Employee emp2 = Employee("Mary", "Supervisor");
+  final queue = ClientQueue();
 
-  Client client1 = Client("Alice", 101, assignedEmployee: emp1);
-  Client client2 = Client("Bob", 102, assignedEmployee: emp2);
-  VipClient vip = VipClient("Charlie", 103, assignedEmployee: emp1);
+  queue.addClient(Client("Іван", 1));
+  queue.addClient(Client("Олена", 2));
+  queue.addClient(Client("Петро", 3));
 
-  client1.display();
-  client2.display();
-  vip.display();
+  queue.showQueue();
+  print("--- Початок обслуговування ---");
+
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
+  queue.serveNext();
 }
